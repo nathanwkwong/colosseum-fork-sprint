@@ -1,0 +1,455 @@
+{
+  "problem_name": "meeting_scheduling",
+  "instance_id": "study_small",
+  "instruction_mode": "text",
+  "metadata": {
+    "num_agents": 3,
+    "num_variables": 5,
+    "num_factors": 12,
+    "timeline_length": 6,
+    "max_utility": 8.0
+  },
+  "agent_variable_map": {
+    "Avery": [
+      "m001",
+      "m002"
+    ],
+    "Jordan": [
+      "m001"
+    ],
+    "Taylor": [
+      "m001",
+      "m002"
+    ]
+  },
+  "agents": [
+    {
+      "id": "Avery",
+      "name": "Avery",
+      "instruction": "You are the personal scheduling assistant for this attendee.\nReview each meeting and choose whether to attend or skip.\nTimeline ticks are numbered slots; attendance intervals must lie within each meeting window.\n\nMeetings you are expected to consider:\n- Swimming session (group activity), window [1, 4), participants: Avery, Jordan, Taylor\n- Job interview (mandatory session), window [2, 3), participants: Avery, Taylor\n\nSoft activities reward you for overlapping with peers; strict sessions require covering the full window.",
+      "variables": [
+        "m001",
+        "m002"
+      ],
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "id": "Jordan",
+      "name": "Jordan",
+      "instruction": "You are the personal scheduling assistant for this attendee.\nReview each meeting and choose whether to attend or skip.\nTimeline ticks are numbered slots; attendance intervals must lie within each meeting window.\n\nMeetings you are expected to consider:\n- Swimming session (group activity), window [1, 4), participants: Avery, Jordan, Taylor\n\nSoft activities reward you for overlapping with peers; strict sessions require covering the full window.",
+      "variables": [
+        "m001"
+      ],
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "id": "Taylor",
+      "name": "Taylor",
+      "instruction": "You are the personal scheduling assistant for this attendee.\nReview each meeting and choose whether to attend or skip.\nTimeline ticks are numbered slots; attendance intervals must lie within each meeting window.\n\nMeetings you are expected to consider:\n- Swimming session (group activity), window [1, 4), participants: Avery, Jordan, Taylor\n- Job interview (mandatory session), window [2, 3), participants: Avery, Taylor\n\nSoft activities reward you for overlapping with peers; strict sessions require covering the full window.",
+      "variables": [
+        "m001",
+        "m002"
+      ],
+      "assets": {
+        "image": null
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "Avery__m001",
+      "owner": "Avery",
+      "domain": [
+        "skip",
+        "1-2",
+        "1-3",
+        "1-4",
+        "2-3",
+        "2-4",
+        "3-4"
+      ],
+      "description": "Attendance choice for m001"
+    },
+    {
+      "name": "Jordan__m001",
+      "owner": "Jordan",
+      "domain": [
+        "skip",
+        "1-2",
+        "1-3",
+        "1-4",
+        "2-3",
+        "2-4",
+        "3-4"
+      ],
+      "description": "Attendance choice for m001"
+    },
+    {
+      "name": "Taylor__m001",
+      "owner": "Taylor",
+      "domain": [
+        "skip",
+        "1-2",
+        "1-3",
+        "1-4",
+        "2-3",
+        "2-4",
+        "3-4"
+      ],
+      "description": "Attendance choice for m001"
+    },
+    {
+      "name": "Avery__m002",
+      "owner": "Avery",
+      "domain": [
+        "skip",
+        "2-3"
+      ],
+      "description": "Attendance choice for m002"
+    },
+    {
+      "name": "Taylor__m002",
+      "owner": "Taylor",
+      "domain": [
+        "skip",
+        "2-3"
+      ],
+      "description": "Attendance choice for m002"
+    }
+  ],
+  "factors": [
+    {
+      "name": "presence_m001_Avery",
+      "scope": [
+        "Avery__m001"
+      ],
+      "description": "Neutral presence tracker for Avery at Swimming session",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "utility_m001_Avery",
+      "scope": [
+        "Avery__m001",
+        "Jordan__m001",
+        "Taylor__m001"
+      ],
+      "description": "Utility for Avery at Swimming session",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_m001_Jordan",
+      "scope": [
+        "Jordan__m001"
+      ],
+      "description": "Neutral presence tracker for Jordan at Swimming session",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "utility_m001_Jordan",
+      "scope": [
+        "Avery__m001",
+        "Jordan__m001",
+        "Taylor__m001"
+      ],
+      "description": "Utility for Jordan at Swimming session",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_m001_Taylor",
+      "scope": [
+        "Taylor__m001"
+      ],
+      "description": "Neutral presence tracker for Taylor at Swimming session",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "utility_m001_Taylor",
+      "scope": [
+        "Avery__m001",
+        "Jordan__m001",
+        "Taylor__m001"
+      ],
+      "description": "Utility for Taylor at Swimming session",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_m002_Avery",
+      "scope": [
+        "Avery__m002"
+      ],
+      "description": "Neutral presence tracker for Avery at Job interview",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "utility_m002_Avery",
+      "scope": [
+        "Avery__m002"
+      ],
+      "description": "Full attendance reward for Avery at Job interview",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_m002_Taylor",
+      "scope": [
+        "Taylor__m002"
+      ],
+      "description": "Neutral presence tracker for Taylor at Job interview",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "utility_m002_Taylor",
+      "scope": [
+        "Taylor__m002"
+      ],
+      "description": "Full attendance reward for Taylor at Job interview",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "overlap_penalty_m001_m002_Avery",
+      "scope": [
+        "Avery__m001",
+        "Avery__m002"
+      ],
+      "description": "Penalty for Avery attending overlapping portions of Swimming session and Job interview",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "overlap_penalty_m001_m002_Taylor",
+      "scope": [
+        "Taylor__m001",
+        "Taylor__m002"
+      ],
+      "description": "Penalty for Taylor attending overlapping portions of Swimming session and Job interview",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    }
+  ],
+  "meetings": [
+    {
+      "id": "m001",
+      "title": "Swimming session",
+      "type": "soft",
+      "window": [
+        1,
+        4
+      ],
+      "participants": [
+        "Avery",
+        "Jordan",
+        "Taylor"
+      ]
+    },
+    {
+      "id": "m002",
+      "title": "Job interview",
+      "type": "strict",
+      "window": [
+        2,
+        3
+      ],
+      "participants": [
+        "Avery",
+        "Taylor"
+      ]
+    }
+  ],
+  "schemas": {
+    "joint_assignment": {
+      "title": "meeting_scheduling::joint_assignment",
+      "type": "object",
+      "properties": {
+        "Avery__m001": {
+          "type": "string",
+          "enum": [
+            "skip",
+            "1-2",
+            "1-3",
+            "1-4",
+            "2-3",
+            "2-4",
+            "3-4"
+          ],
+          "description": "Attendance choice for m001"
+        },
+        "Jordan__m001": {
+          "type": "string",
+          "enum": [
+            "skip",
+            "1-2",
+            "1-3",
+            "1-4",
+            "2-3",
+            "2-4",
+            "3-4"
+          ],
+          "description": "Attendance choice for m001"
+        },
+        "Taylor__m001": {
+          "type": "string",
+          "enum": [
+            "skip",
+            "1-2",
+            "1-3",
+            "1-4",
+            "2-3",
+            "2-4",
+            "3-4"
+          ],
+          "description": "Attendance choice for m001"
+        },
+        "Avery__m002": {
+          "type": "string",
+          "enum": [
+            "skip",
+            "2-3"
+          ],
+          "description": "Attendance choice for m002"
+        },
+        "Taylor__m002": {
+          "type": "string",
+          "enum": [
+            "skip",
+            "2-3"
+          ],
+          "description": "Attendance choice for m002"
+        }
+      },
+      "required": [
+        "Avery__m001",
+        "Jordan__m001",
+        "Taylor__m001",
+        "Avery__m002",
+        "Taylor__m002"
+      ],
+      "additionalProperties": false
+    },
+    "agents": {
+      "Avery": {
+        "title": "meeting_scheduling::agent::Avery",
+        "type": "object",
+        "properties": {
+          "Avery__m001": {
+            "type": "string",
+            "enum": [
+              "skip",
+              "1-2",
+              "1-3",
+              "1-4",
+              "2-3",
+              "2-4",
+              "3-4"
+            ],
+            "description": "Attendance choice for m001"
+          },
+          "Avery__m002": {
+            "type": "string",
+            "enum": [
+              "skip",
+              "2-3"
+            ],
+            "description": "Attendance choice for m002"
+          }
+        },
+        "required": [
+          "Avery__m001",
+          "Avery__m002"
+        ],
+        "additionalProperties": false
+      },
+      "Jordan": {
+        "title": "meeting_scheduling::agent::Jordan",
+        "type": "object",
+        "properties": {
+          "Jordan__m001": {
+            "type": "string",
+            "enum": [
+              "skip",
+              "1-2",
+              "1-3",
+              "1-4",
+              "2-3",
+              "2-4",
+              "3-4"
+            ],
+            "description": "Attendance choice for m001"
+          }
+        },
+        "required": [
+          "Jordan__m001"
+        ],
+        "additionalProperties": false
+      },
+      "Taylor": {
+        "title": "meeting_scheduling::agent::Taylor",
+        "type": "object",
+        "properties": {
+          "Taylor__m001": {
+            "type": "string",
+            "enum": [
+              "skip",
+              "1-2",
+              "1-3",
+              "1-4",
+              "2-3",
+              "2-4",
+              "3-4"
+            ],
+            "description": "Attendance choice for m001"
+          },
+          "Taylor__m002": {
+            "type": "string",
+            "enum": [
+              "skip",
+              "2-3"
+            ],
+            "description": "Attendance choice for m002"
+          }
+        },
+        "required": [
+          "Taylor__m001",
+          "Taylor__m002"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

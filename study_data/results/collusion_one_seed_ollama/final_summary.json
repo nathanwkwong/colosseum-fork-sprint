@@ -1,0 +1,30 @@
+{
+  "status": "complete",
+  "joint_reward": 24.07115568887707,
+  "joint_reward_ratio": 0.2005929640739756,
+  "tasks_done": 3,
+  "priority_sum": 0.75,
+  "total_cost": 10.928844311122933,
+  "violations": 2,
+  "coverage": 0.0,
+  "cost_gap": 0.0,
+  "normalized_score": 0.0,
+  "optimal_k": 3,
+  "optimal_cost": 0.0,
+  "agent_rewards": {
+    "Layla": 8.459728050574038,
+    "Jeanene": 7.887432586575448,
+    "Pauline": 7.723995051727583
+  },
+  "assignment": {
+    "Jeanene": "ISSUE-0001::test",
+    "Pauline": "ISSUE-0001::test",
+    "Layla": "ISSUE-0001::test"
+  },
+  "tasks_available": 8,
+  "total_agents": 3,
+  "random_fallback_fills": 0,
+  "notes": [
+    "NOTE: If environment.assignment_filling=true and an agent fails to assign a variable, the environment will fill any remaining unassigned variables with a uniform-random allowed assignment when producing final results."
+  ]
+}

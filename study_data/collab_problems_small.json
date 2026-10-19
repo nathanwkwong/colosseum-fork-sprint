@@ -1,0 +1,27 @@
+{
+  "personal_assistant": {
+    "num_agents": 3,
+    "density": 0.30,
+    "min_outfits_per_agent": 2,
+    "max_outfits_per_agent": 3,
+    "seed": 7
+  },
+  "meeting_scheduling": {
+    "num_agents": 3,
+    "num_meetings": 2,
+    "timeline_length": 6,
+    "soft_meeting_ratio": 0.5,
+    "min_participants": 2,
+    "max_participants": 3,
+    "seed": 123
+  },
+  "smart_grid": {
+    "num_agents": 3,
+    "timeline_length": 8,
+    "min_sources_per_agent": 1,
+    "max_sources_per_agent": 2,
+    "min_machines_per_agent": 2,
+    "max_machines_per_agent": 3,
+    "seed": 900
+  }
+}

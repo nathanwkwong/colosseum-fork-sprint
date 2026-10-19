@@ -1,0 +1,633 @@
+{
+  "problem_name": "smart_grid",
+  "instance_id": "study_small",
+  "instruction_mode": "text",
+  "metadata": {
+    "num_agents": 3,
+    "num_variables": 8,
+    "num_factors": 13,
+    "timeline_length": 8,
+    "max_utility": 0.0,
+    "min_utility": -65.3397487002291
+  },
+  "agent_variable_map": {
+    "Aurora Industries": [
+      "machine_001",
+      "machine_002",
+      "machine_003"
+    ],
+    "Beacon Works": [
+      "machine_004",
+      "machine_005",
+      "machine_006"
+    ],
+    "Cascade Labs": [
+      "machine_007",
+      "machine_008"
+    ]
+  },
+  "agents": [
+    {
+      "id": "Aurora Industries",
+      "name": "Aurora Industries",
+      "instruction": "You manage energy assignments for this site across a 24-hour horizon.\nSources are shared across multiple sites; other sites will also draw from these sources this round.\nOverflow pulls from the main grid and should be minimised.\n\nAvailable shared sources you can use:\n- src_Solar (Solar) \u2014 clients: 2 (including you). Hourly capacity (kW): [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] (shared)\n\nMachines under your control:\n- CNC mill (machine_001): window [1, 7), uniform load 1.3 kW\n- Water heater (machine_002): window [1, 4), uniform load 2.1 kW\n- Refrigeration chain (machine_003): window [1, 7), uniform load 1.9 kW\n\nOverflow is attributed proportionally each hour on shared pools; choose sources to stay within capacity.",
+      "variables": [
+        "machine_001",
+        "machine_002",
+        "machine_003"
+      ],
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "id": "Beacon Works",
+      "name": "Beacon Works",
+      "instruction": "You manage energy assignments for this site across a 24-hour horizon.\nSources are shared across multiple sites; other sites will also draw from these sources this round.\nOverflow pulls from the main grid and should be minimised.\n\nAvailable shared sources you can use:\n- src_Solar (Solar) \u2014 clients: 2 (including you). Hourly capacity (kW): [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] (shared)\n- src_Wind (Wind) \u2014 clients: 1 (including you). Hourly capacity (kW): [0.2, 1.7, 1.8, 2.3, 3.2, 3.7, 2.7, 0.6] (shared)\n\nMachines under your control:\n- Refrigeration chain (machine_004): window [0, 6), uniform load 1.4 kW\n- HVAC unit (machine_005): window [6, 8), uniform load 5.9 kW\n- Water heater (machine_006): window [1, 6), uniform load 1.2 kW\n\nOverflow is attributed proportionally each hour on shared pools; choose sources to stay within capacity.",
+      "variables": [
+        "machine_004",
+        "machine_005",
+        "machine_006"
+      ],
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "id": "Cascade Labs",
+      "name": "Cascade Labs",
+      "instruction": "You manage energy assignments for this site across a 24-hour horizon.\nSources are shared across multiple sites; other sites will also draw from these sources this round.\nOverflow pulls from the main grid and should be minimised.\n\nAvailable shared sources you can use:\n- src_Hydro (Hydro) \u2014 clients: 1 (including you). Hourly capacity (kW): [0.4, 1.9, 1.6, 1.9, 0.8, 0.7, 1.2, 1.1] (shared)\n- src_Geothermal (Geothermal) \u2014 clients: 1 (including you). Hourly capacity (kW): [0.5, 2.5, 2.4, 3.4, 3.2, 2.9, 3.5, 2.3] (shared)\n- src_Biomass (Biomass) \u2014 clients: 1 (including you). Hourly capacity (kW): [0.2, 0.9, 1.2, 1.4, 2.2, 2.2, 2.6, 1.3] (shared)\n\nMachines under your control:\n- HVAC unit (machine_007): window [3, 7), uniform load 2.1 kW\n- CNC mill (machine_008): window [4, 6), uniform load 2.6 kW\n\nOverflow is attributed proportionally each hour on shared pools; choose sources to stay within capacity.",
+      "variables": [
+        "machine_007",
+        "machine_008"
+      ],
+      "assets": {
+        "image": null
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "machine_001",
+      "owner": "Aurora Industries",
+      "domain": [
+        "src_Solar"
+      ],
+      "description": "Assign CNC mill to a power source"
+    },
+    {
+      "name": "machine_002",
+      "owner": "Aurora Industries",
+      "domain": [
+        "src_Solar"
+      ],
+      "description": "Assign Water heater to a power source"
+    },
+    {
+      "name": "machine_003",
+      "owner": "Aurora Industries",
+      "domain": [
+        "src_Solar"
+      ],
+      "description": "Assign Refrigeration chain to a power source"
+    },
+    {
+      "name": "machine_004",
+      "owner": "Beacon Works",
+      "domain": [
+        "src_Solar",
+        "src_Wind"
+      ],
+      "description": "Assign Refrigeration chain to a power source"
+    },
+    {
+      "name": "machine_005",
+      "owner": "Beacon Works",
+      "domain": [
+        "src_Solar",
+        "src_Wind"
+      ],
+      "description": "Assign HVAC unit to a power source"
+    },
+    {
+      "name": "machine_006",
+      "owner": "Beacon Works",
+      "domain": [
+        "src_Solar",
+        "src_Wind"
+      ],
+      "description": "Assign Water heater to a power source"
+    },
+    {
+      "name": "machine_007",
+      "owner": "Cascade Labs",
+      "domain": [
+        "src_Hydro",
+        "src_Geothermal",
+        "src_Biomass"
+      ],
+      "description": "Assign HVAC unit to a power source"
+    },
+    {
+      "name": "machine_008",
+      "owner": "Cascade Labs",
+      "domain": [
+        "src_Hydro",
+        "src_Geothermal",
+        "src_Biomass"
+      ],
+      "description": "Assign CNC mill to a power source"
+    }
+  ],
+  "factors": [
+    {
+      "name": "presence_machine_001",
+      "scope": [
+        "machine_001"
+      ],
+      "description": "Anchor factor for CNC mill",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_machine_002",
+      "scope": [
+        "machine_002"
+      ],
+      "description": "Anchor factor for Water heater",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_machine_003",
+      "scope": [
+        "machine_003"
+      ],
+      "description": "Anchor factor for Refrigeration chain",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_machine_004",
+      "scope": [
+        "machine_004"
+      ],
+      "description": "Anchor factor for Refrigeration chain",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_machine_005",
+      "scope": [
+        "machine_005"
+      ],
+      "description": "Anchor factor for HVAC unit",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_machine_006",
+      "scope": [
+        "machine_006"
+      ],
+      "description": "Anchor factor for Water heater",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_machine_007",
+      "scope": [
+        "machine_007"
+      ],
+      "description": "Anchor factor for HVAC unit",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "presence_machine_008",
+      "scope": [
+        "machine_008"
+      ],
+      "description": "Anchor factor for CNC mill",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "overflow_src_Solar",
+      "scope": [
+        "machine_001",
+        "machine_002",
+        "machine_003",
+        "machine_004",
+        "machine_005",
+        "machine_006"
+      ],
+      "description": "Overflow penalty for shared Solar source src_Solar",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "overflow_src_Wind",
+      "scope": [
+        "machine_004",
+        "machine_005",
+        "machine_006"
+      ],
+      "description": "Overflow penalty for shared Wind source src_Wind",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "overflow_src_Hydro",
+      "scope": [
+        "machine_007",
+        "machine_008"
+      ],
+      "description": "Overflow penalty for shared Hydro source src_Hydro",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "overflow_src_Geothermal",
+      "scope": [
+        "machine_007",
+        "machine_008"
+      ],
+      "description": "Overflow penalty for shared Geothermal source src_Geothermal",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "overflow_src_Biomass",
+      "scope": [
+        "machine_007",
+        "machine_008"
+      ],
+      "description": "Overflow penalty for shared Biomass source src_Biomass",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_Solar",
+      "kind": "Solar",
+      "capacity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "clients": [
+        "Aurora Industries",
+        "Beacon Works"
+      ]
+    },
+    {
+      "id": "src_Wind",
+      "kind": "Wind",
+      "capacity": [
+        0.22214904367876015,
+        1.7252176167416244,
+        1.841949738981114,
+        2.2585530184620883,
+        3.246473788636688,
+        3.7028701935311203,
+        2.712297005795323,
+        0.5525658694567321
+      ],
+      "clients": [
+        "Beacon Works"
+      ]
+    },
+    {
+      "id": "src_Hydro",
+      "kind": "Hydro",
+      "capacity": [
+        0.3968471114011221,
+        1.9267246933223343,
+        1.629719987007666,
+        1.8539979462770442,
+        0.8381048844195369,
+        0.7010228427397568,
+        1.2402996682532132,
+        1.0705426744395155
+      ],
+      "clients": [
+        "Cascade Labs"
+      ]
+    },
+    {
+      "id": "src_Geothermal",
+      "kind": "Geothermal",
+      "capacity": [
+        0.4751491608527862,
+        2.532330842108853,
+        2.400250743146637,
+        3.447632512595374,
+        3.2442276769686154,
+        2.8547312441118406,
+        3.498826150868512,
+        2.323859386702575
+      ],
+      "clients": [
+        "Cascade Labs"
+      ]
+    },
+    {
+      "id": "src_Biomass",
+      "kind": "Biomass",
+      "capacity": [
+        0.1836365157404196,
+        0.9243170709444681,
+        1.2366697539818625,
+        1.438120702071492,
+        2.1616451208521124,
+        2.2318271904942355,
+        2.5541508441307754,
+        1.3127305627526373
+      ],
+      "clients": [
+        "Cascade Labs"
+      ]
+    }
+  ],
+  "machines": [
+    {
+      "id": "machine_001",
+      "owner": "Aurora Industries",
+      "label": "CNC mill",
+      "start": 1,
+      "end": 7,
+      "energy": 7.590724566586525
+    },
+    {
+      "id": "machine_002",
+      "owner": "Aurora Industries",
+      "label": "Water heater",
+      "start": 1,
+      "end": 4,
+      "energy": 6.284076518557378
+    },
+    {
+      "id": "machine_003",
+      "owner": "Aurora Industries",
+      "label": "Refrigeration chain",
+      "start": 1,
+      "end": 7,
+      "energy": 11.471852607711206
+    },
+    {
+      "id": "machine_004",
+      "owner": "Beacon Works",
+      "label": "Refrigeration chain",
+      "start": 0,
+      "end": 6,
+      "energy": 8.52816522144203
+    },
+    {
+      "id": "machine_005",
+      "owner": "Beacon Works",
+      "label": "HVAC unit",
+      "start": 6,
+      "end": 8,
+      "energy": 11.701417945382861
+    },
+    {
+      "id": "machine_006",
+      "owner": "Beacon Works",
+      "label": "Water heater",
+      "start": 1,
+      "end": 6,
+      "energy": 6.071018749944426
+    },
+    {
+      "id": "machine_007",
+      "owner": "Cascade Labs",
+      "label": "HVAC unit",
+      "start": 3,
+      "end": 7,
+      "energy": 8.408213066854849
+    },
+    {
+      "id": "machine_008",
+      "owner": "Cascade Labs",
+      "label": "CNC mill",
+      "start": 4,
+      "end": 6,
+      "energy": 5.2842800237498215
+    }
+  ],
+  "schemas": {
+    "joint_assignment": {
+      "title": "smart_grid::joint_assignment",
+      "type": "object",
+      "properties": {
+        "machine_001": {
+          "type": "string",
+          "enum": [
+            "src_Solar"
+          ],
+          "description": "Assign CNC mill to a power source"
+        },
+        "machine_002": {
+          "type": "string",
+          "enum": [
+            "src_Solar"
+          ],
+          "description": "Assign Water heater to a power source"
+        },
+        "machine_003": {
+          "type": "string",
+          "enum": [
+            "src_Solar"
+          ],
+          "description": "Assign Refrigeration chain to a power source"
+        },
+        "machine_004": {
+          "type": "string",
+          "enum": [
+            "src_Solar",
+            "src_Wind"
+          ],
+          "description": "Assign Refrigeration chain to a power source"
+        },
+        "machine_005": {
+          "type": "string",
+          "enum": [
+            "src_Solar",
+            "src_Wind"
+          ],
+          "description": "Assign HVAC unit to a power source"
+        },
+        "machine_006": {
+          "type": "string",
+          "enum": [
+            "src_Solar",
+            "src_Wind"
+          ],
+          "description": "Assign Water heater to a power source"
+        },
+        "machine_007": {
+          "type": "string",
+          "enum": [
+            "src_Hydro",
+            "src_Geothermal",
+            "src_Biomass"
+          ],
+          "description": "Assign HVAC unit to a power source"
+        },
+        "machine_008": {
+          "type": "string",
+          "enum": [
+            "src_Hydro",
+            "src_Geothermal",
+            "src_Biomass"
+          ],
+          "description": "Assign CNC mill to a power source"
+        }
+      },
+      "required": [
+        "machine_001",
+        "machine_002",
+        "machine_003",
+        "machine_004",
+        "machine_005",
+        "machine_006",
+        "machine_007",
+        "machine_008"
+      ],
+      "additionalProperties": false
+    },
+    "agents": {
+      "Aurora Industries": {
+        "title": "smart_grid::agent::Aurora Industries",
+        "type": "object",
+        "properties": {
+          "machine_001": {
+            "type": "string",
+            "enum": [
+              "src_Solar"
+            ],
+            "description": "Assign CNC mill to a power source"
+          },
+          "machine_002": {
+            "type": "string",
+            "enum": [
+              "src_Solar"
+            ],
+            "description": "Assign Water heater to a power source"
+          },
+          "machine_003": {
+            "type": "string",
+            "enum": [
+              "src_Solar"
+            ],
+            "description": "Assign Refrigeration chain to a power source"
+          }
+        },
+        "required": [
+          "machine_001",
+          "machine_002",
+          "machine_003"
+        ],
+        "additionalProperties": false
+      },
+      "Beacon Works": {
+        "title": "smart_grid::agent::Beacon Works",
+        "type": "object",
+        "properties": {
+          "machine_004": {
+            "type": "string",
+            "enum": [
+              "src_Solar",
+              "src_Wind"
+            ],
+            "description": "Assign Refrigeration chain to a power source"
+          },
+          "machine_005": {
+            "type": "string",
+            "enum": [
+              "src_Solar",
+              "src_Wind"
+            ],
+            "description": "Assign HVAC unit to a power source"
+          },
+          "machine_006": {
+            "type": "string",
+            "enum": [
+              "src_Solar",
+              "src_Wind"
+            ],
+            "description": "Assign Water heater to a power source"
+          }
+        },
+        "required": [
+          "machine_004",
+          "machine_005",
+          "machine_006"
+        ],
+        "additionalProperties": false
+      },
+      "Cascade Labs": {
+        "title": "smart_grid::agent::Cascade Labs",
+        "type": "object",
+        "properties": {
+          "machine_007": {
+            "type": "string",
+            "enum": [
+              "src_Hydro",
+              "src_Geothermal",
+              "src_Biomass"
+            ],
+            "description": "Assign HVAC unit to a power source"
+          },
+          "machine_008": {
+            "type": "string",
+            "enum": [
+              "src_Hydro",
+              "src_Geothermal",
+              "src_Biomass"
+            ],
+            "description": "Assign CNC mill to a power source"
+          }
+        },
+        "required": [
+          "machine_007",
+          "machine_008"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

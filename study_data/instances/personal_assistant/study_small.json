@@ -1,0 +1,261 @@
+{
+  "problem_name": "personal_assistant",
+  "instance_id": "study_small",
+  "max_utility": 10.0,
+  "instruction_mode": "text",
+  "metadata": {
+    "num_agents": 3,
+    "num_variables": 3,
+    "num_factors": 8
+  },
+  "agent_variable_map": {
+    "Avery": [
+      "Avery's Outfit"
+    ],
+    "Jordan": [
+      "Jordan's Outfit"
+    ],
+    "Taylor": [
+      "Taylor's Outfit"
+    ]
+  },
+  "agents": [
+    {
+      "id": "Avery",
+      "name": "Avery",
+      "instruction": "Task: You are the personal assistant AI for Sam, coordinating with other personal agents to choose outfits for an upcoming event.\nFocus on outfits that highlight your preferred colors and steer clear of your avoid colors, while staying coordinated with the rest of the team.\n\nPersonal colour guideline: prefer black, white, avoid red, green.\n\nWardrobe options (numbered):\n1. Black hoodie\n2. Red shirt\n3. White t-shirt\n\nCoordination constraints:\n- Constraint (match on color): Match colours with Jordan to stay cohesive.\n\nConstraint semantics:\n- Match on color: your outfit color must equal your partner's outfit color.\n- Contrast on color: your outfit color must differ from your partner's outfit color.\n- Match on article: your outfit article (e.g., shirt, dress) must equal your partner's article; color can differ.\n- Contrast on article: your outfit article must differ from your partner's article.",
+      "variables": [
+        "Avery's Outfit"
+      ],
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "id": "Jordan",
+      "name": "Jordan",
+      "instruction": "Task: You are the personal assistant AI for Sam, coordinating with other personal agents to choose outfits for an upcoming event.\nFocus on outfits that highlight your preferred colors and steer clear of your avoid colors, while staying coordinated with the rest of the team.\n\nPersonal colour guideline: prefer white, avoid black, red.\n\nWardrobe options (numbered):\n1. White blouse\n2. White t-shirt\n\nCoordination constraints:\n- Constraint (match on color): Match colours with Avery to stay cohesive.\n- Constraint (contrast on color): Contrast colours with Taylor to balance the palette.\n\nConstraint semantics:\n- Match on color: your outfit color must equal your partner's outfit color.\n- Contrast on color: your outfit color must differ from your partner's outfit color.\n- Match on article: your outfit article (e.g., shirt, dress) must equal your partner's article; color can differ.\n- Contrast on article: your outfit article must differ from your partner's article.",
+      "variables": [
+        "Jordan's Outfit"
+      ],
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "id": "Taylor",
+      "name": "Taylor",
+      "instruction": "Task: You are the personal assistant AI for Sam, coordinating with other personal agents to choose outfits for an upcoming event.\nFocus on outfits that highlight your preferred colors and steer clear of your avoid colors, while staying coordinated with the rest of the team.\n\nPersonal colour guideline: prefer black, red, avoid blue, white.\n\nWardrobe options (numbered):\n1. Red t-shirt\n2. Black dress\n\nCoordination constraints:\n- Constraint (contrast on color): Contrast colours with Jordan to balance the palette.\n\nConstraint semantics:\n- Match on color: your outfit color must equal your partner's outfit color.\n- Contrast on color: your outfit color must differ from your partner's outfit color.\n- Match on article: your outfit article (e.g., shirt, dress) must equal your partner's article; color can differ.\n- Contrast on article: your outfit article must differ from your partner's article.",
+      "variables": [
+        "Taylor's Outfit"
+      ],
+      "assets": {
+        "image": null
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "Avery's Outfit",
+      "owner": "Avery",
+      "domain": [
+        1,
+        2,
+        3
+      ],
+      "description": "Select the numbered outfit from your wardrobe list."
+    },
+    {
+      "name": "Jordan's Outfit",
+      "owner": "Jordan",
+      "domain": [
+        1,
+        2
+      ],
+      "description": "Select the numbered outfit from your wardrobe list."
+    },
+    {
+      "name": "Taylor's Outfit",
+      "owner": "Taylor",
+      "domain": [
+        1,
+        2
+      ],
+      "description": "Select the numbered outfit from your wardrobe list."
+    }
+  ],
+  "factors": [
+    {
+      "name": "Avery_pref_set_black_white",
+      "scope": [
+        "Avery's Outfit"
+      ],
+      "description": "Reward for matching Avery's preferred colors (black, white).",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "Avery_avoid_set_red_green",
+      "scope": [
+        "Avery's Outfit"
+      ],
+      "description": "Reward for avoiding Avery's dislike colors (red, green).",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "Jordan_pref_set_white",
+      "scope": [
+        "Jordan's Outfit"
+      ],
+      "description": "Reward for matching Jordan's preferred colors (white).",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "Jordan_avoid_set_black_red",
+      "scope": [
+        "Jordan's Outfit"
+      ],
+      "description": "Reward for avoiding Jordan's dislike colors (black, red).",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "Taylor_pref_set_black_red",
+      "scope": [
+        "Taylor's Outfit"
+      ],
+      "description": "Reward for matching Taylor's preferred colors (black, red).",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "Taylor_avoid_set_blue_white",
+      "scope": [
+        "Taylor's Outfit"
+      ],
+      "description": "Reward for avoiding Taylor's dislike colors (blue, white).",
+      "type": "personal_preference",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "Avery_Jordan_color_coord",
+      "scope": [
+        "Avery's Outfit",
+        "Jordan's Outfit"
+      ],
+      "description": "Avery prefers to match on color palette, while Jordan prefers to match on color palette.",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    },
+    {
+      "name": "Jordan_Taylor_color_coord",
+      "scope": [
+        "Jordan's Outfit",
+        "Taylor's Outfit"
+      ],
+      "description": "Jordan prefers to contrast on color palette, while Taylor prefers to contrast on color palette.",
+      "type": "coordination",
+      "assets": {
+        "image": null
+      }
+    }
+  ],
+  "schemas": {
+    "joint_assignment": {
+      "title": "personal_assistant::joint_assignment",
+      "type": "object",
+      "properties": {
+        "Avery's Outfit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3,
+          "description": "Select the numbered outfit from your wardrobe list."
+        },
+        "Jordan's Outfit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2,
+          "description": "Select the numbered outfit from your wardrobe list."
+        },
+        "Taylor's Outfit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2,
+          "description": "Select the numbered outfit from your wardrobe list."
+        }
+      },
+      "required": [
+        "Avery's Outfit",
+        "Jordan's Outfit",
+        "Taylor's Outfit"
+      ],
+      "additionalProperties": false
+    },
+    "agents": {
+      "Avery": {
+        "title": "personal_assistant::agent::Avery",
+        "type": "object",
+        "properties": {
+          "Avery's Outfit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "description": "Select the numbered outfit from your wardrobe list."
+          }
+        },
+        "required": [
+          "Avery's Outfit"
+        ],
+        "additionalProperties": false
+      },
+      "Jordan": {
+        "title": "personal_assistant::agent::Jordan",
+        "type": "object",
+        "properties": {
+          "Jordan's Outfit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2,
+            "description": "Select the numbered outfit from your wardrobe list."
+          }
+        },
+        "required": [
+          "Jordan's Outfit"
+        ],
+        "additionalProperties": false
+      },
+      "Taylor": {
+        "title": "personal_assistant::agent::Taylor",
+        "type": "object",
+        "properties": {
+          "Taylor's Outfit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2,
+            "description": "Select the numbered outfit from your wardrobe list."
+          }
+        },
+        "required": [
+          "Taylor's Outfit"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}
