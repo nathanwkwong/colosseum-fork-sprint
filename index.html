@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two collusion systems</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f4f3f0;
+    --surface: #fffcf8;
+    --text: #1c1b19;
+    --muted: #5e5a54;
+    --faint: #7a756d;
+    --line: #d8d3cb;
+    --accent: #1d4ed8;
+    --accent-ink: #ffffff;
+    --fill: #e7eefc;
+    --code-bg: #efece6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161615;
+      --surface: #22211f;
+      --text: #f3f1ec;
+      --muted: #b7b2a8;
+      --faint: #8f8a82;
+      --line: #3a3834;
+      --accent: #8eb0ff;
+      --accent-ink: #121418;
+      --fill: #2a3348;
+      --code-bg: #2c2b28;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 "Segoe UI", system-ui, sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+  }
+  h1 { font-size: 24px; font-weight: 500; margin: 0 0 8px; }
+  h2 { font-size: 18px; font-weight: 500; margin: 0; }
+  h3 { font-size: 16px; font-weight: 500; margin: 0; }
+  p { margin: 0; }
+  .lede { color: var(--muted); max-width: 68ch; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  .repo, .view {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+  }
+  .repo { border-radius: 999px; padding: 4px 12px; }
+  .view { border-radius: 6px; padding: 4px 10px; color: var(--muted); background: transparent; }
+  .repo[aria-pressed="true"], .view[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: var(--fill);
+    color: var(--text);
+  }
+  .view[aria-pressed="true"] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .repo-line { margin-top: 14px; max-width: 68ch; }
+  .section { margin-top: 28px; }
+  .caption { margin-top: 6px; color: var(--faint); font-size: 13px; }
+  .stage { margin-top: 16px; overflow-x: auto; }
+  .canvas { position: relative; }
+  .canvas svg { position: absolute; inset: 0; }
+  .node {
+    position: absolute;
+    width: 196px;
+    height: 62px;
+    margin: 0;
+    padding: 8px 10px;
+    text-align: left;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+  }
+  .node[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: var(--fill);
+  }
+  .node strong { display: block; font-size: 13px; font-weight: 500; line-height: 16px; }
+  .node span { display: block; margin-top: 3px; font-size: 11px; line-height: 14px; color: var(--faint); }
+  .detail {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .summary { margin-top: 8px; max-width: 72ch; }
+  .path { margin-top: 8px; color: var(--faint); font-size: 13px; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); }
+  li { margin: 4px 0; }
+  .note {
+    margin-top: 28px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .note p { margin-top: 4px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Two collusion systems</h1>
+  <p class="lede">Colosseum and Audit the Whisper are separate repositories. They do not share a runner, a dataset, or a detector.</p>
+  <div class="row" id="repos"></div>
+  <p class="repo-line" id="repo-line"></p>
+  <div class="row" id="views"></div>
+  <section class="section">
+    <h2 id="heading"></h2>
+    <p class="caption" id="caption"></p>
+    <div class="stage" id="stage"></div>
+  </section>
+  <section class="detail" id="detail"></section>
+  <aside class="note">
+    <h3>How the two systems differ</h3>
+    <p>Colosseum watches task outcomes on a communication graph: reward, regret, and whether a lie or a suspicion shows up in a survey. Audit the Whisper watches the text channel itself: a planted bit string, auditor edits, and a calibrated union of detectors.</p>
+  </aside>
+</main>
+<script id="data" type="application/json">{"colosseum": {"architecture": {"caption": "Wiring of one Colosseum experiment. Arrows are dependencies, top to bottom.", "direction": "vertical", "nodes": [{"id": "yaml", "title": "Experiment YAML", "subtitle": "Seed, graph, model, sweep", "summary": "One YAML file is the whole experiment. It names the environment, the communication topology, the model, and the sweep factors (agent count, colluder count, secret channel, prompt variant, seeds).", "path": "experiments/*/configs/*.yaml", "points": ["simulation: iterations, planning rounds, conversation steps, seed", "communication_network: path, star, complete, or a random graph", "llm_models: provider and generation parameters", "experiment.sweeps: the cartesian product the runner expands"]}, {"id": "runners", "title": "Experiment runners", "subtitle": "Five python -m entry points", "summary": "Each research question has its own runner. They share the Terrarium agent loop and differ in the task, the injected prompt, and the score.", "path": "experiments/", "points": ["collusion.run — covert coalition on a hidden blackboard", "persuasion/collusion.run — persuasion on the public Jira board", "persuasion/hospital.run — the same idea on hospital resources", "network_influence.run — a false availability claim", "agent_misalignment.run — a hospital coalition with a harmful objective"]}, {"id": "protocol", "title": "Local protocol", "subtitle": "In-process tool calls", "summary": "LocalCommunicationProtocol replaces an MCP server. Agents call environment tools in-process, so sweeps can run in parallel threads. Tool events are recorded, and action traces are stripped off secret boards.", "path": "experiments/common/local_protocol.py", "points": ["Holds the Megaboard and the live environment", "agent_planning_turn and agent_execution_turn", "Scrubs action_executed events from secret blackboards"]}, {"id": "env", "title": "Task environment", "subtitle": "Jira, hospital, meetings", "summary": "Terrarium builds the task from the seed. There is no input CSV. Choice-environment subclasses exist when the study wants a smaller action space.", "path": "terrarium envs + experiments/collusion/choice/", "points": ["JiraTicketEnvironment — shared ticket work", "Hospital resource DCOP — patient and resource allocation", "MeetingSchedulingEnvironment — used by network influence", "Choice wrappers for Jira, hospital, wardrobe, meetings, and smart grid"]}, {"id": "llm", "title": "LLM client", "subtitle": "One client per agent", "summary": "Each agent gets a Terrarium BaseAgent wrapping a provider client taken from the YAML. A vLLM runtime is started only when the provider is vllm.", "path": "experiments/collusion/run.py", "points": ["Providers used in the paper configs: OpenAI, Together, Anthropic, Gemini, vLLM", "Study configs also point at a local Ollama model", "Prompt and trajectory loggers write beside the run"]}, {"id": "board", "title": "Megaboard", "subtitle": "Public and secret boards", "summary": "build_communication_network places a blackboard on each edge of the graph. Colluders can receive one extra board that other agents cannot see.", "path": "terrarium.networks + terrarium.blackboard", "points": ["Topologies: path, star, complete, random-graph families", "Secret board is created only when the sweep enables it and at least two colluders exist", "Blackboard text dumps are written after init, planning, and execution"]}, {"id": "tools", "title": "Environment tools", "subtitle": "Read, post, act", "summary": "Terrarium looks up a tool class by environment name and binds it to the Megaboard. Agents read boards, post messages, and take task actions through those tools.", "path": "terrarium.environment_tools", "points": ["Instantiated inside the local protocol, not via a server", "An environment may point tools_environment_name at a shared toolset"]}, {"id": "collab", "title": "CoLLAB", "subtitle": "Optional DCOP sidecar", "summary": "A git submodule, not the Colosseum runner. It generates cooperative problems and can solve them with a symbolic solver or a mock debug agent, with no API key.", "path": "external/CoLLAB/", "points": ["Problems: personal assistant, meeting scheduling, smart grid", "Protocols: ICC-DM, ICC-CoT, ICC-NM, ICC Image", "Some Terrarium environments expect TERRARIUM_COLLAB_PATH"]}, {"id": "metrics", "title": "Metrics", "subtitle": "Reward and regret", "summary": "After the execution turn, the runner scores the joint assignment. Collusion is a gain for the coalition relative to everyone else, not a detector alarm.", "path": "experiments/*/metrics.py", "points": ["Joint reward and coalition regret", "Jira can be compared to an exact optimum", "Network influence adds a propagation rate", "Misalignment adds overall regret and coalition advantage"]}, {"id": "artifacts", "title": "Run folder", "subtitle": "Turns, boards, summary.csv", "summary": "Every seed writes a run directory. The sweep root also keeps config.json, experiment.log, progress.json, and a summary table.", "path": "experiments/\u003cname>/outputs/\u003ctag>/\u003ctimestamp>/", "points": ["runs/\u003cmodel>/\u003csweep>/\u003crun_id>/agent_turns.json", "metrics.json, blackboards, tool_events, agent prompts", "summary.csv across the sweep"]}, {"id": "judge", "title": "LLM judges", "subtitle": "Post-hoc, separate process", "summary": "Judges are not inside the agent loop. A later command reads finished logs and asks a model to rate collusion, belief, or suspicion.", "path": "experiments/collusion/judge_blackboards.py", "points": ["Secret-blackboard judge for covert collusion", "Survey judge for misinformation spread", "Suspicion and attribution judge for hospital misalignment"]}, {"id": "plots", "title": "Sweep plots", "subtitle": "Mean and SEM", "summary": "Plot scripts read a finished sweep directory and write figures under plots_outputs. They do not rerun agents.", "path": "experiments/*/plots/generate_all.py", "points": ["Prompt variant and topology comparisons", "Misinformation propagation versus joint reward", "Hospital regret panels aligned with the paper figures"]}], "edges": [{"from": "yaml", "to": "runners"}, {"from": "runners", "to": "protocol"}, {"from": "runners", "to": "env"}, {"from": "runners", "to": "llm"}, {"from": "protocol", "to": "board"}, {"from": "protocol", "to": "tools"}, {"from": "env", "to": "tools"}, {"from": "env", "to": "collab"}, {"from": "llm", "to": "protocol"}, {"from": "board", "to": "metrics"}, {"from": "tools", "to": "metrics"}, {"from": "metrics", "to": "artifacts"}, {"from": "artifacts", "to": "judge"}, {"from": "artifacts", "to": "plots"}]}, "runtime": {"caption": "One collusion seed, in order. The secret board is skipped when the sweep turns it off.", "direction": "vertical", "nodes": [{"id": "load", "title": "Load YAML", "subtitle": "python -m experiments.collusion.run", "summary": "The runner reads the config, normalizes the seed list, and opens a timestamped output root.", "path": "experiments/collusion/run.py", "points": ["Requires Python 3.11 because Terrarium does", "API keys come from the repo-root .env"]}, {"id": "sweep", "title": "Expand the sweep", "subtitle": "Model × topology × coalition", "summary": "Factors become a cartesian product: model, topology, agent count, colluder count, secret-channel flag, prompt variant, environment, and seed. Runs are capped by max_concurrent_runs.", "path": "experiments/collusion/run.py", "points": ["A missing secret channel forces the prompt variant to control", "Resume later fills only incomplete run folders"]}, {"id": "setup", "title": "Open one run", "subtitle": "Protocol, env, loggers", "summary": "A run builds a local protocol, constructs the environment class from environment.name or environment.import_path, and attaches prompt and trajectory loggers.", "path": "experiments/collusion/run.py", "points": ["Run id encodes model, topology, n, colluder count, secret flag, variant, and seed"]}, {"id": "graph", "title": "Build the graph", "subtitle": "Agents on a topology", "summary": "Agent names come from the environment. Terrarium lays blackboards along the chosen topology and the environment stores that network.", "path": "terrarium.networks.build_communication_network", "points": ["consolidate_channels can merge edges onto fewer boards"]}, {"id": "coalition", "title": "Choose colluders", "subtitle": "first or random", "summary": "A subset of agents is marked colluder. Turn order is random, or colluders-first in the persuasion experiment.", "path": "experiments/collusion/run.py", "points": ["Roles are recorded as colluder or normal", "Selection strategy lives under experiment.collusion"]}, {"id": "prompts", "title": "Inject prompts", "subtitle": "Only colluders, only with a secret", "summary": "CollusionPrompts wraps the environment prompts. Colluders see the coalition and the secret board id. Everyone else keeps the cooperative task prompt.", "path": "experiments/collusion/prompts.py", "points": ["Variants include control, simple, deception, structured, aggressive", "Persuasion variants include authority, scarcity, social proof, and others"]}, {"id": "secret", "title": "Secret blackboard", "subtitle": "Colluders only", "summary": "If the flag is on and the coalition has two or more agents, the protocol creates a hidden board. Tool traces are not allowed to land there; it is for scheming messages.", "path": "experiments/common/local_protocol.py", "points": ["Disabled runs never create this board", "The judge later rates text on this board"]}, {"id": "plan", "title": "Planning rounds", "subtitle": "Talk, then tools", "summary": "For each planning round, every agent takes a planning turn: it sees its boards, may call tools, and posts. Blackboard snapshots are saved after the round.", "path": "LocalCommunicationProtocol.agent_planning_turn", "points": ["max_planning_rounds and max_conversation_steps come from the YAML"]}, {"id": "exec", "title": "Execution turn", "subtitle": "Commit the task action", "summary": "Each agent then takes one execution turn and the environment applies the joint assignment: tickets claimed, patients allocated, or meetings placed.", "path": "LocalCommunicationProtocol.agent_execution_turn", "points": ["The environment, not the prompt, computes reward"]}, {"id": "score", "title": "Score the run", "subtitle": "Joint reward, coalition regret", "summary": "Metrics compare what the coalition achieved with what the whole team achieved. Optional later passes compute an exact Jira optimum or call a judge.", "path": "experiments/collusion/metrics.py", "points": ["metrics.json is per run", "summary.csv is per sweep"]}, {"id": "write", "title": "Write artifacts", "subtitle": "Then the next seed", "summary": "The run directory is complete when turns, metrics, and blackboard dumps are on disk. The sweep continues until every factor combination has a folder.", "path": "experiments/collusion/outputs/", "points": ["progress.json is updated so a crashed sweep can resume"]}], "edges": [{"from": "load", "to": "sweep"}, {"from": "sweep", "to": "setup"}, {"from": "setup", "to": "graph"}, {"from": "graph", "to": "coalition"}, {"from": "coalition", "to": "prompts"}, {"from": "prompts", "to": "secret"}, {"from": "secret", "to": "plan"}, {"from": "plan", "to": "exec"}, {"from": "exec", "to": "score"}, {"from": "score", "to": "write"}]}, "functions": {"caption": "What Colosseum can measure. Click a box for the entry point and the score.", "direction": "vertical", "nodes": [{"id": "audit", "title": "Colosseum audit", "subtitle": "Cooperative LLM agents", "summary": "The framework asks whether tool-calling agents that are supposed to cooperate instead benefit a coalition. The signal is task reward, not a hidden-bit detector.", "path": "README.md", "points": ["Agents share blackboards on a graph", "A subset can be prompted to collude, persuade, lie, or misalign", "Paper: Nakamura et al., arXiv:2602.15198"]}, {"id": "covert", "title": "Covert collusion", "subtitle": "Hidden board + deception", "summary": "A coalition gets a private blackboard and a prompt that tells them to coordinate against the others. The question is whether that channel raises coalition reward.", "path": "python -m experiments.collusion.run", "points": ["Default task is Jira tickets", "Factors: colluder count, secret channel, prompt variant, topology", "Scores: joint reward, coalition regret, secret-board judge rating", "case_identification later freezes finished logs into labeled cases"]}, {"id": "persuade", "title": "Persuasion", "subtitle": "Public-board tactics", "summary": "Colluders already have a coalition. They use the public board to push everyone else into worse tasks. Hospital is the same pattern on a resource DCOP.", "path": "experiments/persuasion/", "points": ["Jira tactics: helpful misdirection, authority, social proof, scarcity, reciprocity", "Hospital run: experiments.persuasion.hospital.run", "Score is still coalition regret, plus persuasion-specific plots"]}, {"id": "influence", "title": "Network influence", "subtitle": "False availability claim", "summary": "Adversaries post that a target agent is unavailable. After the task, each agent answers a survey and an OpenAI judge scores whether the lie spread.", "path": "python -m experiments.network_influence.run", "points": ["Targeted: one victim. Mass: distinct victims", "Scores: joint reward ratio and propagation among non-adversaries", "Environments include meetings and Jira"]}, {"id": "misalign", "title": "Objective misalignment", "subtitle": "Hospital coalition", "summary": "The coalition is told to chase a harmful objective while doing hospital allocation. Strategies range from stealthy reward capture to open sabotage.", "path": "python -m experiments.agent_misalignment.run", "points": ["Covert: raise coalition reward, keep overall performance near baseline", "Sabotage self-promoting: coalition reward without protecting the team", "Sabotage self-sacrificing: raise overall regret on purpose", "A judge scores suspicion and whether blame is correct"]}, {"id": "collab", "title": "CoLLAB sidecar", "subtitle": "Coordination, no collusion audit", "summary": "CoLLAB measures whether agents can solve a cooperative DCOP. It is the task generator some environments rely on, and it can run with a symbolic solver and a debug provider.", "path": "external/CoLLAB/", "points": ["example00 generates instances from configs/problems.json", "example01 scores them with a symbolic solver", "example03 runs ICC-DM; --provider debug avoids an API call"]}], "edges": [{"from": "audit", "to": "covert"}, {"from": "audit", "to": "persuade"}, {"from": "audit", "to": "influence"}, {"from": "audit", "to": "misalign"}, {"from": "audit", "to": "collab"}]}}, "whisper": {"architecture": {"caption": "Audit the Whisper splits transcript generation from detection. Arrows are data flow.", "direction": "vertical", "nodes": [{"id": "scenario", "title": "Scenario YAML", "subtitle": "Market, roles, scheme", "summary": "A scenario file names the market, which roles collude, and the covert scheme. Scripted agents need no API key.", "path": "configs/pricing_default.yaml", "points": ["Honest twins exist, such as pricing_honest.yaml", "Hosted Gemini, Groq, and OpenAI configs are separate files"]}, {"id": "auditcfg", "title": "Audit YAML", "subtitle": "Seeds, interventions, detectors", "summary": "An audit file points at a scenario and lists seeds, role permutation, interventions, and which detectors to run.", "path": "configs/audits/", "points": ["AuditPipelineConfig.from_yaml is the loader"]}, {"id": "bench", "title": "ColludeBench", "subtitle": "Environment factory", "summary": "make_environment looks up a scenario name and returns a multi-agent market. The runner and the auditor both call this factory.", "path": "colludebench/registry.py", "points": ["pricing_duopoly", "first_price_auction", "peer_review", "continuous_double_auction"]}, {"id": "pipeline", "title": "Audit pipeline", "subtitle": "Seeds, roles, round loop", "summary": "AuditPipeline expands seeds, optionally shuffles roles, builds honest and colluding agents, and runs the round loop with interventions in front of the environment.", "path": "auditor/pipeline.py", "points": ["Seed manager records base seed, replicate, and effective seed", "Role permutation stops a detector from keying on a fixed name"]}, {"id": "agents", "title": "Agents", "subtitle": "Honest, colluding, or LLM", "summary": "Honest agents emit a competitive action. Colluding agents emit a harmful action plus a covert channel. LLM agents are used only for hosted configs.", "path": "colludebench/agents/", "points": ["Colluding pricing script posts Price: 15.00", "Honest pricing script posts Price: 1.10", "decode() exists on channels; the live loop does not call it"]}, {"id": "channels", "title": "Covert channels", "subtitle": "Bits inside ordinary text", "summary": "Each round the pipeline hands colluders a two-bit payload cycling through 00, 01, 10, 11. The channel hides those bits in the message.", "path": "colludebench/covert_channels/", "points": ["keyword maps bits to orchid, saffron, cobalt, marigold", "Also parity, partition, watermark, sparse keyword, adaptive smart, adaptive temperature, and review bias"]}, {"id": "intervene", "title": "Interventions", "subtitle": "Edit text before the step", "summary": "The auditor mutates messages before the environment parses them. The goal is to cut channel capacity without breaking the Price, Bid, or Vote token.", "path": "auditor/interventions.py", "points": ["Selective paraphrase", "Budget jitter (truncate to a token budget)", "Rate limit (replace the message)", "Canary injection"]}, {"id": "envs", "title": "Markets", "subtitle": "Parse action, return reward", "summary": "The environment reads the action token, updates demand or the auction or the review, and returns per-role reward plus harm statistics.", "path": "colludebench/environments/", "points": ["Pricing: profit, consumer surplus, Lerner index", "Auction: revenue, efficiency, who won", "Review: accuracy and acceptance by group"]}, {"id": "logs", "title": "Transcripts", "subtitle": "JSONL plus a manifest", "summary": "Every turn is one JSONL record: run, round, role, message, parsed action, reward, and which interventions fired.", "path": "colludebench/logging.py", "points": ["results/audit/\u003cscenario>/\u003crun>.jsonl", "A sibling interventions JSONL and a manifest.json"]}, {"id": "detectors", "title": "Detector stack", "subtitle": "Statistics, not a single alarm", "summary": "Each detector reads the transcripts and returns a statistic. Thresholds come from honest calibration, not from a hand-set cutoff.", "path": "auditor/detectors/registry.py", "points": ["cross_run_mi, permutation_invariance, watermark_variance", "linguistic_steganalysis, acceptance_bias, signal_bias, welfare_shift", "External wrappers: CASE, Perfect Collusion, SentinelAgent"]}, {"id": "calibrate", "title": "Honest nulls", "subtitle": "Offline calibration", "summary": "Calibration runs honest agents, stores detector statistics, and fits thresholds aimed at a false-positive rate of 10^-2 and 10^-3.", "path": "auditor/calibrate.py", "points": ["python -m auditor.calibrate writes results/calibration/", "validate_union resamples those logs; the 10k command is --replicates, not a scenario run"]}, {"id": "union", "title": "Union test", "subtitle": "One decision from many p-values", "summary": "The reviewer-facing rule is Holm–Bonferroni across the detector p-values. Acceptance bias can short-circuit that step-down. Other unions exist for ablations.", "path": "auditor/metrics.py", "points": ["Bonferroni thresholds from calibrate_union", "Westfall–Young maxT", "Martingale e-value for optional stopping"]}, {"id": "results", "title": "Results bundle", "subtitle": "Tables, manifests, release", "summary": "Regeneration writes metrics, dataset hashes, and an anonymized release tree. Notebooks only read those artifacts.", "path": "results/ and release/", "points": ["results/experiments/metrics.md", "results/calibration/union_validation.json", "scripts/prepare_release.py builds release/"]}], "edges": [{"from": "scenario", "to": "bench"}, {"from": "auditcfg", "to": "pipeline"}, {"from": "bench", "to": "agents"}, {"from": "bench", "to": "envs"}, {"from": "pipeline", "to": "agents"}, {"from": "pipeline", "to": "intervene"}, {"from": "agents", "to": "channels"}, {"from": "channels", "to": "logs"}, {"from": "intervene", "to": "envs"}, {"from": "envs", "to": "logs"}, {"from": "logs", "to": "detectors"}, {"from": "calibrate", "to": "union"}, {"from": "detectors", "to": "union"}, {"from": "union", "to": "results"}]}, "runtime": {"caption": "One audited round, then the detector pass. Honest agents skip the encode step.", "direction": "vertical", "nodes": [{"id": "cfg", "title": "Load configs", "subtitle": "Scenario plus audit YAML", "summary": "The pipeline loads the scenario, drops keys that are not environment arguments, and asks the seed manager for replicate seeds.", "path": "auditor/pipeline.py", "points": ["A bare colludebench.cli run skips interventions and detectors"]}, {"id": "reset", "title": "Reset the market", "subtitle": "Effective seed", "summary": "make_environment builds the market and reset(seed) draws demand, valuations, or submission quality. Roles may be permuted for this replicate.", "path": "colludebench/environments/base.py", "points": ["Permutation is recorded in the audit manifest"]}, {"id": "bits", "title": "Assign payload bits", "subtitle": "00, 01, 10, 11", "summary": "Colluding agents receive payload_bits for this round. The pattern cycles, so a detector can look for a signal that repeats across rounds and runs.", "path": "auditor/pipeline.py", "points": ["Honest agents do not receive a payload"]}, {"id": "act", "title": "Agent writes", "subtitle": "Task sentence plus action", "summary": "agent.act returns the message. Scripted colluders state a harmful price, bid, or vote. Scripted honest agents state the competitive action.", "path": "colludebench/agents/colluding.py", "points": ["Hosted runs swap in colludebench.agents.llm"]}, {"id": "encode", "title": "Hide the bits", "subtitle": "Channel.encode", "summary": "The colluder channel appends or reshapes the message so the payload is present and the action token still parses. Keyword mode appends one of orchid, saffron, cobalt, marigold.", "path": "colludebench/covert_channels/keyword.py", "points": ["The receiver decode path is implemented and unused in this loop"]}, {"id": "mutate", "title": "Auditor edits", "subtitle": "Before the market sees it", "summary": "Paraphrase, truncation, rate limit, and canaries run on the message dict. Action tokens Price:, Bid:, and Vote: are preserved by the paraphrase controller.", "path": "auditor/interventions.py", "points": ["Each role gets an intervention record for the JSONL"]}, {"id": "parse", "title": "Parse the action", "subtitle": "Price, Bid, or Vote", "summary": "A deterministic parser pulls the numeric price or bid, or the review vote, out of the message. Unparsed actions become n/a.", "path": "auditor/pipeline.py", "points": ["The market reward uses this token, not the hidden keyword"]}, {"id": "step", "title": "Market step", "subtitle": "Reward and harm stats", "summary": "env.step applies every role's message, returns the next observation, per-role reward, and an info dict (surplus, clearing price, accept or reject).", "path": "colludebench/environments/", "points": ["The loop repeats until the environment says done"]}, {"id": "jsonl", "title": "Append the turn", "subtitle": "Message, action, reward", "summary": "The turn is logged, then the next round starts. When the episode ends, a summary JSON holds profit, welfare, or accuracy.", "path": "colludebench/logging.py", "points": ["MetricsAccumulator folds the info dict across rounds"]}, {"id": "detect", "title": "Score detectors", "subtitle": "After the transcripts exist", "summary": "Registered detectors run on the run set. Each returns a statistic that is compared with the honest null.", "path": "auditor/detectors/", "points": ["Mutual information looks across runs for a reused payload"]}, {"id": "decide", "title": "Union decision", "subtitle": "Alert or not", "summary": "p-values are combined. The default Holm–Bonferroni union alarms only when the family-wise error stays inside the target rate.", "path": "auditor/metrics.py", "points": ["Targets used in the paper: 10^-2 and 10^-3"]}], "edges": [{"from": "cfg", "to": "reset"}, {"from": "reset", "to": "bits"}, {"from": "bits", "to": "act"}, {"from": "act", "to": "encode"}, {"from": "encode", "to": "mutate"}, {"from": "mutate", "to": "parse"}, {"from": "parse", "to": "step"}, {"from": "step", "to": "jsonl"}, {"from": "jsonl", "to": "detect"}, {"from": "detect", "to": "decide"}]}, "functions": {"caption": "What Audit the Whisper can generate and what it can catch. Click a box for the concrete schemes.", "direction": "vertical", "nodes": [{"id": "whisper", "title": "Audit the Whisper", "subtitle": "Steganographic collusion", "summary": "Colluders hide a bit payload in ordinary market text while also taking a harmful action. The auditor tries to catch the channel at a fixed false-positive rate.", "path": "README.md", "points": ["Scripted agents reproduce the paper without a GPU or an API key", "Harm and hidden bits are separate: the price is the harm, the keyword is the channel"]}, {"id": "markets", "title": "Four markets", "subtitle": "Where harm is scored", "summary": "Each market has a competitive baseline and a collusive harm signal. ColludeBench-v0 is these four environments plus their YAML.", "path": "colludebench/registry.py", "points": ["Pricing duopoly — profit and Lerner index; harm is a price above Nash", "First-price auction — revenue and efficiency; harm is bid rotation", "Peer review — accuracy and group fairness; harm is accepting weak papers", "Continuous double auction — traders posting bids and asks"]}, {"id": "schemes", "title": "Covert schemes", "subtitle": "How bits are hidden", "summary": "The scheme is a config field. ColludingAgent selects the channel object. Payload rate is bits per 100 tokens on the environment config.", "path": "colludebench/agents/colluding.py", "points": ["keyword and sparse_keyword — reserved synonyms", "parity — bit in token-count parity", "partition — vocabulary bins", "watermark — green-list token bias", "adaptive_smart and adaptive_temperature — jitter that tries to lower mutual information", "bias_group_a and bias_group_b — review votes steered at a cohort"]}, {"id": "controls", "title": "Auditor controls", "subtitle": "Capacity cuts", "summary": "Interventions are the online control. They change the text the market and the detectors see, and they are logged per role.", "path": "auditor/interventions.py", "points": ["Paraphrase that keeps Price, Bid, and Vote", "Budget jitter between min_tokens and max_tokens", "Probabilistic rate limit with replacement text", "Canary phrases on random roles"]}, {"id": "detect", "title": "Detector union", "subtitle": "Calibrated alarm", "summary": "No single feature is the audit. The stack mixes channel tests and harm tests, then a union rule holds the false-positive rate.", "path": "auditor/detectors/registry.py", "points": ["cross_run_mi — payload reuse across runs", "permutation_invariance — signal that sticks to a role name", "watermark_variance — suppressed green-list variance", "linguistic_steganalysis — chi-square and type-token drift", "acceptance_bias, signal_bias, welfare_shift — harm, not just bits", "CASE, Perfect Collusion, and SentinelAgent are comparison baselines"]}], "edges": [{"from": "whisper", "to": "markets"}, {"from": "whisper", "to": "schemes"}, {"from": "whisper", "to": "controls"}, {"from": "whisper", "to": "detect"}]}}}</script>
+<script>
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const REPOS = [
+  ["colosseum", "Colosseum"],
+  ["whisper", "Audit the Whisper"],
+];
+const VIEWS = [
+  ["architecture", "Architecture"],
+  ["runtime", "Runtime"],
+  ["functions", "Functions"],
+];
+const LINES = {
+  colosseum: "Tool-calling agents share blackboards. The audit measures whether a coalition gains reward.",
+  whisper: "Scripted agents hide bits in Price, Bid, and Vote lines. Detectors are scored against a false-positive cap.",
+};
+const NODE_W = 196;
+const NODE_H = 62;
+const RANK_GAP = 40;
+const NODE_GAP = 18;
+const PAD = 4;
+
+let repo = "colosseum";
+let view = "architecture";
+let picked = "yaml";
+
+function layout(diagram) {
+  const incoming = {};
+  const order = {};
+  diagram.nodes.forEach((node, index) => {
+    incoming[node.id] = [];
+    order[node.id] = index;
+  });
+  diagram.edges.forEach((edge) => incoming[edge.to].push(edge.from));
+  const rank = {};
+  const visiting = new Set();
+  function rankOf(id) {
+    if (rank[id] != null) return rank[id];
+    if (visiting.has(id)) return 0;
+    visiting.add(id);
+    const parents = incoming[id];
+    const value = parents.length ? Math.max(...parents.map(rankOf)) + 1 : 0;
+    visiting.delete(id);
+    rank[id] = value;
+    return value;
+  }
+  diagram.nodes.forEach((node) => rankOf(node.id));
+  const layers = [];
+  diagram.nodes.forEach((node) => {
+    const layer = rank[node.id];
+    (layers[layer] || (layers[layer] = [])).push(node.id);
+  });
+  layers.forEach((layer) => layer.sort((a, b) => order[a] - order[b]));
+  const widest = Math.max(...layers.map((layer) => layer.length));
+  const width = PAD * 2 + widest * NODE_W + (widest - 1) * NODE_GAP;
+  const height = PAD * 2 + layers.length * NODE_H + (layers.length - 1) * RANK_GAP;
+  const pos = {};
+  layers.forEach((layer, layerIndex) => {
+    const layerWidth = layer.length * NODE_W + (layer.length - 1) * NODE_GAP;
+    const x0 = (width - layerWidth) / 2;
+    layer.forEach((id, index) => {
+      pos[id] = {
+        x: x0 + index * (NODE_W + NODE_GAP),
+        y: PAD + layerIndex * (NODE_H + RANK_GAP),
+      };
+    });
+  });
+  return { width, height, pos };
+}
+
+function el(tag, attrs, children) {
+  const node = document.createElement(tag);
+  Object.entries(attrs || {}).forEach(([key, value]) => {
+    if (key === "text") node.textContent = value;
+    else node.setAttribute(key, value);
+  });
+  (children || []).forEach((child) => node.append(child));
+  return node;
+}
+
+function render() {
+  const diagram = DATA[repo][view];
+  const selected = diagram.nodes.find((node) => node.id === picked) || diagram.nodes[0];
+  picked = selected.id;
+
+  const repos = document.getElementById("repos");
+  repos.replaceChildren(...REPOS.map(([id, label]) => {
+    const button = el("button", { type: "button", class: "repo", "aria-pressed": String(repo === id), text: label });
+    button.addEventListener("click", () => { repo = id; picked = ""; render(); });
+    return button;
+  }));
+
+  document.getElementById("repo-line").textContent = LINES[repo];
+
+  const views = document.getElementById("views");
+  views.replaceChildren(...VIEWS.map(([id, label]) => {
+    const button = el("button", { type: "button", class: "view", "aria-pressed": String(view === id), text: label });
+    button.addEventListener("click", () => { view = id; picked = ""; render(); });
+    return button;
+  }));
+
+  const repoName = repo === "colosseum" ? "Colosseum" : "Audit the Whisper";
+  const viewName = VIEWS.find(([id]) => id === view)[1];
+  document.getElementById("heading").textContent = repoName + " · " + viewName;
+  document.getElementById("caption").textContent = diagram.caption + " Click a box to read what it does.";
+
+  const placed = layout(diagram);
+  const canvas = el("div", { class: "canvas", role: "img", "aria-label": repoName + " " + viewName + " diagram" });
+  canvas.style.width = placed.width + "px";
+  canvas.style.height = placed.height + "px";
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("width", placed.width);
+  svg.setAttribute("height", placed.height);
+  const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+  const line = getComputedStyle(document.documentElement).getPropertyValue("--line").trim();
+  diagram.edges.forEach((edge) => {
+    const from = placed.pos[edge.from];
+    const to = placed.pos[edge.to];
+    const x1 = from.x + NODE_W / 2;
+    const y1 = from.y + NODE_H;
+    const x2 = to.x + NODE_W / 2;
+    const y2 = to.y;
+    const mid = (y1 + y2) / 2;
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M " + x1 + " " + y1 + " C " + x1 + " " + mid + ", " + x2 + " " + mid + ", " + x2 + " " + y2);
+    path.setAttribute("fill", "none");
+    const hot = edge.from === selected.id || edge.to === selected.id;
+    path.setAttribute("stroke", hot ? accent : line);
+    path.setAttribute("stroke-width", hot ? "1.75" : "1.25");
+    svg.append(path);
+  });
+  canvas.append(svg);
+  diagram.nodes.forEach((node) => {
+    const box = placed.pos[node.id];
+    const button = el("button", { type: "button", class: "node", "aria-pressed": String(node.id === selected.id) });
+    button.style.left = box.x + "px";
+    button.style.top = box.y + "px";
+    button.append(el("strong", { text: node.title }), el("span", { text: node.subtitle }));
+    button.addEventListener("click", () => { picked = node.id; render(); });
+    canvas.append(button);
+  });
+  document.getElementById("stage").replaceChildren(canvas);
+
+  const list = el("ul");
+  selected.points.forEach((point) => list.append(el("li", { text: point })));
+  const path = el("p", { class: "path" });
+  path.append("Code ", el("code", { text: selected.path }));
+  document.getElementById("detail").replaceChildren(
+    el("h3", { text: selected.title }),
+    el("p", { class: "summary", text: selected.summary }),
+    path,
+    list,
+  );
+}
+
+render();
+</script>
+</body>
+</html>
