@@ -4,14 +4,15 @@ Colosseum does not ship a downloadable dataset. Terrarium builds Jira tickets, m
 
 ## What is in this folder
 
-| Path | What it is |
-| --- | --- |
-| `collab_problems_small.json` | 3-agent generator knobs for CoLLAB wardrobe, meeting, and smart-grid tasks |
-| `instances/<problem>/study_small.json` | The generated task: agents, variables, domains, factors, JSON schemas |
-| `instances/<problem>/study_small.pkl` | Same instance for CoLLAB's symbolic solver and debug protocol |
-| `collusion_one_seed.yaml` | One OpenAI `gpt-4o-mini` collusion sweep (3 agents, 1 seed, secret channel off) |
-| `collusion_one_seed_ollama.yaml` | Same sweep pointed at local Ollama `llama3.2:3b` |
-| `results/collusion_one_seed_ollama/` | Snapshot of the first completed local run (summary, metrics, blackboard, turns) |
+| Path                                   | What it is                                                                      |
+| -------------------------------------- | ------------------------------------------------------------------------------- |
+| `collab_problems_small.json`           | 3-agent generator knobs for CoLLAB wardrobe, meeting, and smart-grid tasks      |
+| `instances/<problem>/study_small.json` | The generated task: agents, variables, domains, factors, JSON schemas           |
+| `instances/<problem>/study_small.pkl`  | Same instance for CoLLAB's symbolic solver and debug protocol                   |
+| `collusion_one_seed.yaml`              | One OpenAI `gpt-4o-mini` collusion sweep (3 agents, 1 seed, secret channel off) |
+| `collusion_one_seed_ollama.yaml`       | Same sweep pointed at local Ollama `llama3.2:3b`                                |
+| `collusion_one_seed_deepseek.yaml`     | Same sweep via DeepSeek (`DEEPSEEK_API_KEY`, choose `llm.deepseek.model`)       |
+| `results/collusion_one_seed_ollama/`   | Snapshot of the first completed local run (summary, metrics, blackboard, turns) |
 
 Open `instances/personal_assistant/study_small.json` first. Avery, Jordan, and Taylor each pick a numbered outfit and must match or contrast colours.
 
@@ -32,7 +33,7 @@ From the Colosseum repo root:
 uv venv --python 3.11 .venv
 source .venv/bin/activate
 uv sync --no-install-project
-cp .env.example .env   # fill OPENAI_API_KEY
+cp .env.example .env   # fill DEEPSEEK_API_KEY and/or OPENAI_API_KEY
 ```
 
 ## Run the no-key CoLLAB dataset
@@ -83,7 +84,33 @@ PY
 
 `example00_generate.py` also accepts this JSON, but it always writes under `external/CoLLAB/outputs/examples/01_generate/` rather than `study_data/instances/`.
 
-## Run one Colosseum collusion sweep
+## Run one Colosseum collusion sweep (DeepSeek)
+
+Put your key in the repo-root `.env`:
+
+```bash
+DEEPSEEK_API_KEY=sk-...
+```
+
+Choose the model in `study_data/collusion_one_seed_deepseek.yaml` under `llm.deepseek.model` (`deepseek-chat` or `deepseek-reasoner`), or export `DEEPSEEK_MODEL`. Then:
+
+```bash
+source .venv/bin/activate
+python -m experiments.collusion.run --config study_data/collusion_one_seed_deepseek.yaml
+```
+
+Any experiment YAML can use the same block:
+
+```yaml
+llm:
+    provider: deepseek
+    deepseek:
+        model: deepseek-chat
+        request_timeout: 180
+        params:
+            max_tokens: 1500
+            temperature: 0.7
+```
 
 OpenAI path (`study_data/collusion_one_seed.yaml`) needs `OPENAI_API_KEY`. Direct OpenAI calls are geo-blocked in some regions (`unsupported_country_region_territory`).
 

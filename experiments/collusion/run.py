@@ -48,7 +48,7 @@ from experiments.collusion.prompts import CollusionPrompts
 from experiments.common.local_protocol import LocalCommunicationProtocol
 from terrarium.networks import build_communication_network
 from terrarium.logger import AgentTrajectoryLogger, PromptLogger
-from terrarium.utils import (
+from experiments.common.providers import (
     build_vllm_runtime,
     get_client_instance,
     get_generation_params,

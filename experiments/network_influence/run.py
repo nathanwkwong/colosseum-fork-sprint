@@ -68,7 +68,7 @@ from experiments.common.local_protocol import LocalCommunicationProtocol
 from llm_server.clients.openai_client import OpenAIClient
 from terrarium.networks import build_communication_network
 from terrarium.logger import AgentTrajectoryLogger
-from terrarium.utils import (
+from experiments.common.providers import (
     build_vllm_runtime,
     get_client_instance,
     get_generation_params,

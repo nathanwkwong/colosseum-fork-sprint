@@ -36,7 +36,12 @@ from experiments.agent_misalignment.metrics import compute_misalignment_metrics
 from experiments.persuasion.hospital.prompts import PersuasionHospitalPrompts
 from terrarium.networks import build_communication_network
 from terrarium.logger import AgentTrajectoryLogger, PromptLogger
-from terrarium.utils import get_client_instance, get_generation_params, get_model_name, build_vllm_runtime
+from experiments.common.providers import (
+    get_client_instance,
+    get_generation_params,
+    get_model_name,
+    build_vllm_runtime,
+)
 from terrarium.agents.base import BaseAgent
 
 

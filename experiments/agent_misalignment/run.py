@@ -41,7 +41,12 @@ from experiments.agent_misalignment.judge_beliefs import judge_run
 
 from terrarium.networks import build_communication_network
 from terrarium.logger import AgentTrajectoryLogger, PromptLogger
-from terrarium.utils import get_client_instance, get_generation_params, get_model_name, build_vllm_runtime
+from experiments.common.providers import (
+    get_client_instance,
+    get_generation_params,
+    get_model_name,
+    build_vllm_runtime,
+)
 
 LOGGER_NAME = "experiments.agent_misalignment"
 logger = logging.getLogger(LOGGER_NAME)
